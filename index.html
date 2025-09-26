@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Do it - Login/Signup</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: #e0e0e0;
+      padding: 30px;
+      border-radius: 20px;
+      width: 350px;
+      max-width: 90%;
+      text-align: center;
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+    }
+    h2 { margin-bottom: 20px; color: #333; }
+    .input-group {
+      position: relative;
+      margin: 15px 0;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 12px 40px 12px 40px;
+      border: none;
+      border-radius: 30px;
+      background: #e0e0e0;
+      box-shadow: inset 5px 5px 10px #bebebe, inset -5px -5px 10px #ffffff;
+      outline: none;
+    }
+    .input-group i {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: #555;
+    }
+    .toggle-eye {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #555;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin: 15px 0;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(145deg, #ff416c, #ff4b2b);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover { background: linear-gradient(145deg, #ff4b2b, #ff416c); }
+    .switch-link { color: #ff416c; cursor: pointer; font-size: 14px; }
+    .error { color: red; font-size: 13px; display: none; }
+    #signupForm, #forgotForm { display: none; }
+    #welcomeBox { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container" id="authBox">
+    <h2 id="formTitle">Login</h2>
+
+    <!-- Login Form -->
+    <form id="loginForm">
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="loginUsername" placeholder="Username"/>
+      </div>
+      <p class="error" id="loginUserError">Username required!</p>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="loginPassword" placeholder="Password"/>
+        <i class="fas fa-eye toggle-eye" id="toggleLoginPassword"></i>
+      </div>
+      <p class="error" id="loginPassError">Password required!</p>
+
+      <button type="submit" class="btn">Login</button>
+      <p><span class="switch-link" onclick="showForgot()">Forgot Password?</span></p>
+      <p>Don’t have an account? <span class="switch-link" onclick="showSignup()">Sign Up</span></p>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signupForm">
+      <div class="input-group">
+        <i class="fas fa-user-plus"></i>
+        <input type="text" id="signupUsername" placeholder="Choose Username"/>
+      </div>
+      <p class="error" id="signupUserError">Username required!</p>
+
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="signupEmail" placeholder="Email"/>
+      </div>
+      <p class="error" id="signupEmailError">Valid email required!</p>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="signupPassword" placeholder="Password"/>
+        <i class="fas fa-eye toggle-eye" id="toggleSignupPassword"></i>
+      </div>
+      <p class="error" id="signupPassError">Password required!</p>
+
+      <button type="submit" class="btn">Create Account</button>
+      <p>Already have an account? <span class="switch-link" onclick="showLogin()">Login</span></p>
+    </form>
+
+    <!-- Forgot Password Form -->
+    <form id="forgotForm">
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="forgotEmail" placeholder="Enter your email"/>
+      </div>
+      <p class="error" id="forgotEmailError">Valid email required!</p>
+      <button type="submit" class="btn">Reset Password</button>
+      <p>Back to <span class="switch-link" onclick="showLogin()">Login</span></p>
+    </form>
+  </div>
+
+  <!-- Welcome Box -->
+  <div class="container" id="welcomeBox">
+    <h2>🎉 Welcome!</h2>
+    <p id="welcomeUser"></p>
+    <button class="btn" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    // Switch forms
+    function showSignup(){ 
+      document.getElementById("loginForm").style.display="none";
+      document.getElementById("signupForm").style.display="block";
+      document.getElementById("forgotForm").style.display="none";
+      document.getElementById("formTitle").innerText="Sign Up";
+    }
+    function showLogin(){ 
+      document.getElementById("loginForm").style.display="block";
+      document.getElementById("signupForm").style.display="none";
+      document.getElementById("forgotForm").style.display="none";
+      document.getElementById("formTitle").innerText="Login";
+    }
+    function showForgot(){
+      document.getElementById("loginForm").style.display="none";
+      document.getElementById("signupForm").style.display="none";
+      document.getElementById("forgotForm").style.display="block";
+      document.getElementById("formTitle").innerText="Forgot Password";
+    }
+
+    // Toggle password visibility
+    function togglePassword(inputId, eyeId){
+      const input=document.getElementById(inputId);
+      const eye=document.getElementById(eyeId);
+      eye.addEventListener("click",()=>{
+        input.type=input.type==="password"?"text":"password";
+        eye.classList.toggle("fa-eye-slash");
+      });
+    }
+    togglePassword("loginPassword","toggleLoginPassword");
+    togglePassword("signupPassword","toggleSignupPassword");
+
+    // Signup validation + save data
+    document.getElementById("signupForm").addEventListener("submit",e=>{
+      e.preventDefault();
+      let valid=true;
+      const username=document.getElementById("signupUsername").value.trim();
+      const email=document.getElementById("signupEmail").value.trim();
+      const password=document.getElementById("signupPassword").value.trim();
+      const emailPattern=/^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+      if(!username){ document.getElementById("signupUserError").style.display="block"; valid=false; }
+      else document.getElementById("signupUserError").style.display="none";
+
+      if(!emailPattern.test(email)){ document.getElementById("signupEmailError").style.display="block"; valid=false; }
+      else document.getElementById("signupEmailError").style.display="none";
+
+      if(!password){ document.getElementById("signupPassError").style.display="block"; valid=false; }
+      else document.getElementById("signupPassError").style.display="none";
+
+      if(valid){ 
+        localStorage.setItem("username", username);
+        localStorage.setItem("email", email);
+        localStorage.setItem("password", password);
+        alert("🎉 Signup successful! Please login.");
+        showLogin();
+      }
+    });
+
+    // Login validation + check data
+    document.getElementById("loginForm").addEventListener("submit",e=>{
+      e.preventDefault();
+      const username=document.getElementById("loginUsername").value.trim();
+      const password=document.getElementById("loginPassword").value.trim();
+      let valid=true;
+
+      if(!username){ document.getElementById("loginUserError").style.display="block"; valid=false; }
+      else document.getElementById("loginUserError").style.display="none";
+
+      if(!password){ document.getElementById("loginPassError").style.display="block"; valid=false; }
+      else document.getElementById("loginPassError").style.display="none";
+
+      if(valid){
+        const storedUser=localStorage.getItem("username");
+        const storedPass=localStorage.getItem("password");
+        if(username===storedUser && password===storedPass){
+          document.getElementById("authBox").style.display="none";
+          document.getElementById("welcomeBox").style.display="block";
+          document.getElementById("welcomeUser").innerText="Hello, "+storedUser+" 👋";
+        } else {
+          alert("❌ Invalid username or password!");
+        }
+      }
+    });
+
+    // Forgot password validation
+    document.getElementById("forgotForm").addEventListener("submit",e=>{
+      e.preventDefault();
+      const email=document.getElementById("forgotEmail").value.trim();
+      const storedEmail=localStorage.getItem("email");
+      const emailPattern=/^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+      if(!emailPattern.test(email)){
+        document.getElementById("forgotEmailError").style.display="block";
+      } else {
+        document.getElementById("forgotEmailError").style.display="none";
+        if(email===storedEmail){
+          alert("📧 Reset link sent to "+email+" (demo only).");
+          showLogin();
+        } else {
+          alert("❌ Email not registered!");
+        }
+      }
+    });
+
+    // Logout
+    function logout(){
+      document.getElementById("authBox").style.display="block";
+      document.getElementById("welcomeBox").style.display="none";
+      showLogin();
+    }
+  </script>
+</body>
+</html>
